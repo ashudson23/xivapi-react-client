@@ -1,0 +1,16 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$TAG_NAME', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$TAG_NAME']
+- name: 'gcr.io/xiclone-shared/xiclone-zephyr:v2.0.6'
+  args: [
+    'node', '/zephyr/deploy/docker.js'
+  ]
+  env: [
+    'SERVICE_NAME=${_SERVICE_NAME}',
+    'DOCKER_TAG=$TAG_NAME',
+    'PROJECT_ID=$PROJECT_ID'
+  ]
+images:
+- gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$TAG_NAME
